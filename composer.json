@@ -1,0 +1,7 @@
+{
+    "require": {
+        "cba85/php-mondialrelay-webservice": "^1.0",
+        "woothemes/woocommerce-api": "^2.0",
+        "automattic/woocommerce": "^3.1"
+    }
+}

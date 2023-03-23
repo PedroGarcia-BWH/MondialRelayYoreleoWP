@@ -1,0 +1,154 @@
+{
+    "packages": [
+        {
+            "name": "automattic/woocommerce",
+            "version": "3.1.0",
+            "version_normalized": "3.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/woocommerce/wc-api-php.git",
+                "reference": "d3b292f04c0b3b21dced691ebad8be073a83b4ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/woocommerce/wc-api-php/zipball/d3b292f04c0b3b21dced691ebad8be073a83b4ad",
+                "reference": "d3b292f04c0b3b21dced691ebad8be073a83b4ad",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">= 7.1.0"
+            },
+            "require-dev": {
+                "overtrue/phplint": "7.4.x-dev",
+                "phpunit/phpunit": "^8",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "time": "2022-03-18T21:46:17+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Automattic\\WooCommerce\\": [
+                        "src/WooCommerce"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Claudio Sanches",
+                    "email": "claudio.sanches@automattic.com"
+                }
+            ],
+            "description": "A PHP wrapper for the WooCommerce REST API",
+            "keywords": [
+                "api",
+                "woocommerce"
+            ],
+            "support": {
+                "issues": "https://github.com/woocommerce/wc-api-php/issues",
+                "source": "https://github.com/woocommerce/wc-api-php/tree/3.1.0"
+            },
+            "install-path": "../automattic/woocommerce"
+        },
+        {
+            "name": "cba85/php-mondialrelay-webservice",
+            "version": "1.0.0",
+            "version_normalized": "1.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cba85/php-mondialrelay-webservice.git",
+                "reference": "1024146df8648ee62f2e0fb52ad0e07466c6644e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cba85/php-mondialrelay-webservice/zipball/1024146df8648ee62f2e0fb52ad0e07466c6644e",
+                "reference": "1024146df8648ee62f2e0fb52ad0e07466c6644e",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "time": "2020-09-02T20:45:05+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "MondialRelay\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clement Barbaza",
+                    "email": "hi@clementbarbaza.com"
+                }
+            ],
+            "description": "PHP interface for Mondial Relay webservice.",
+            "support": {
+                "issues": "https://github.com/cba85/php-mondialrelay-webservice/issues",
+                "source": "https://github.com/cba85/php-mondialrelay-webservice/tree/1.0.0"
+            },
+            "install-path": "../cba85/php-mondialrelay-webservice"
+        },
+        {
+            "name": "woothemes/woocommerce-api",
+            "version": "2.0.1",
+            "version_normalized": "2.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kloon/WooCommerce-REST-API-Client-Library.git",
+                "reference": "66fb772d21822dde0a07ea083953a5873a390e07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kloon/WooCommerce-REST-API-Client-Library/zipball/66fb772d21822dde0a07ea083953a5873a390e07",
+                "reference": "66fb772d21822dde0a07ea083953a5873a390e07",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">= 5.2.0"
+            },
+            "time": "2015-07-13T21:19:17+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "lib/woocommerce-api"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL v3"
+            ],
+            "authors": [
+                {
+                    "name": "Max Rice",
+                    "email": "max@maxrice.com"
+                },
+                {
+                    "name": "Gerhard Potgieter"
+                }
+            ],
+            "description": "A client library for the WooCommerce REST API",
+            "support": {
+                "issues": "https://github.com/kloon/WooCommerce-REST-API-Client-Library/issues",
+                "source": "https://github.com/kloon/WooCommerce-REST-API-Client-Library/tree/2.0.1"
+            },
+            "abandoned": "automattic/woocommerce",
+            "install-path": "../woothemes/woocommerce-api"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
