@@ -1,0 +1,14 @@
+.my-custom-input p span input {
+    border: none !important;
+    color: #777;
+  }
+
+.input-text {
+    border: none !important;
+    color: #777;
+}
+
+.woocommerce form .form-row input.input-text, .woocommerce form .form-row textarea {
+    border: none !important;
+    color: #777;
+}
