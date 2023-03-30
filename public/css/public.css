@@ -1,14 +1,27 @@
-.my-custom-input p span input {
-    border: none !important;
-    color: #777;
-  }
-
-.input-text {
-    border: none !important;
-    color: #777;
+.point-text {
+    font-size: 1.5em;
+    color: black
 }
 
-.woocommerce form .form-row input.input-text, .woocommerce form .form-row textarea {
-    border: none !important;
-    color: #777;
+.point-data {
+    font-size: 0.75em;
+    color: gray;
+    margin-left: 1em;
 }
+
+.point-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  "FILL" 0,
+  "wght" 400,
+  "GRAD" 0,
+  "opsz" 48
+}
+
+.ocultar-campo {
+    display: none;
+ }

@@ -12,7 +12,7 @@
  * Plugin Name:       Mondial Relay by Yoreleo
  * Plugin URI:        https://github.com/PedroGarcia-BWH/MondialRelayYoreleoWP
  * Description:       Conexión con la API de Mondial Relay para la gestión de envíos y datos de los clientes de Yoreleo
- * Version:           alpha-0.0.1
+ * Version:           alpha-0.0.3
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Pedro José García Romera
@@ -36,5 +36,6 @@ foreach (glob(plugin_dir_path(__FILE__) . "includes/*.php") as $filename) {
 
 function my_custom_styles() {
     wp_enqueue_style( 'mondialStyles', plugin_dir_url( __FILE__ ) . 'public/css/public.css' );
+    wp_enqueue_style( 'statusShipping', plugin_dir_url( __FILE__ ) . 'public/css/statusShipping.css' );
 }
 add_action( 'wp_enqueue_scripts', 'my_custom_styles' );

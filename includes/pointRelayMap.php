@@ -1,6 +1,8 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/mondialRelayAPI/wooComercceClient/Client.php';
+require_once dirname(__DIR__) . '/private/config.php';
 
 add_shortcode('PointRelayMap', 'PointRelayMap');
 
@@ -18,9 +20,15 @@ function PointRelayMap()
     function OnParcelShopSelected(selectedParcelShop) {
       var nombrePunto = document.getElementById("Nombre_Punto");
       var direccionPunto = document.getElementById("Direccion_Punto");
+      var nombrePuntoHidden = document.getElementById("Nombre_Punto_Hidden");
+      var direccionPuntoHidden = document.getElementById("Direccion_Punto_Hidden");
+      var codigoPunto = document.getElementById("Punto_Pack_Hidden");
 
       nombrePunto.textContent = selectedParcelShop.Nom;
-      direccionPunto.textContent = selectedParcelShop.Adresse1;
+      nombrePuntoHidden.value = selectedParcelShop.Nom;
+      codigoPunto.value = selectedParcelShop.ID;
+      direccionPunto.textContent = selectedParcelShop.Adresse1 + ", " + selectedParcelShop.CP + ", " + selectedParcelShop.Ville;
+      direccionPuntoHidden.value = selectedParcelShop.Adresse1 + ", " + selectedParcelShop.CP + ", " + selectedParcelShop.Ville;
     }
 
     $(document).ready(function() {
@@ -36,7 +44,7 @@ function PointRelayMap()
               if (postal_code == null) postal_code = "28001";
               
               $("#Zone_Widget").MR_ParcelShopPicker({
-                Target: "#Target_Widget",
+                Target: "",
                 Brand: "BDTEST  ",
                 Country: "ES",
                 PostCode: postal_code,
@@ -51,8 +59,10 @@ function PointRelayMap()
       }
     });
     </script>';
-
-    
+    //practicas.website
+    //$client = new Client("https://practicas.website","ck_b6d11d688c0bd6719dd94a55faa4116522c9dc24","cs_d84c87daf39e042616802bc396f67a1c007e89b0");
+    // $client = new Client(WOO_SITE, WOO_KEY, WOO_PASS);;
+    //echo $client->getLastOrderByUser();
     return $html;
 }
 

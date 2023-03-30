@@ -40,17 +40,67 @@ function agregar_nuevo_campo( $fields ) {
     return $fields;
 }*/
 
+
+
+add_filter( 'woocommerce_checkout_fields', 'InfoPointRelais' );
+
+function InfoPointRelais( $fields ) {
+    $fields['billing']['Nombre_Punto_Hidden'] = array(
+        'label'       => __( 'Lugar de recogida', 'woocommerce' ),
+        'required'    => true,
+        'class'       => array('ocultar-campo'),
+        'clear'       => true,
+        'type'        => 'text',
+        'custom_attributes' => array(
+            'readonly' => 'readonly' // Añade el atributo readonly
+        ),
+    );
+
+    $fields['billing']['Direccion_Punto_Hidden'] = array(
+        'label'       => __( 'Dirección de recogida', 'woocommerce' ),
+        'required'    => true,
+        'class'       => array( 'ocultar-campo' ),
+        'clear'       => true,
+        'type'        => 'text',
+        'custom_attributes' => array(
+            'readonly' => 'readonly' // Añade el atributo readonly
+        )
+    );
+
+    $fields['billing']['Punto_Pack_Hidden'] = array(
+        'label'       => __( 'Punto Pack', 'woocommerce' ),
+        'required'    => true,
+        'class'       => array( 'ocultar-campo' ),
+        'clear'       => true,
+        'type'        => 'text',
+        'custom_attributes' => array(
+            'readonly' => 'readonly' // Añade el atributo readonly
+        )
+    );
+    return $fields;
+}
+
+
 function mi_filtro_personalizado() {
     // Agrega una etiqueta <p> con un mensaje personalizado antes de la información del cliente en la página de pago de WooCommerce
-    echo '<p>Lugar de recogida</p>
-          <p id="Nombre_Punto"></p>
-          <p>Dirección del punto de recogida</p>
-          <p id="Direccion_Punto"></p>
-          <p>Tiempo de entrega</p>
-          <p id="Tiempo_Entrega">3-5 días laborables</p>';
-
+    echo '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <p class="point-text">Lugar de recogida</p>
+    <div class="point-container">
+        <span class="material-symbols-outlined">storefront</span>
+        <p id="Nombre_Punto" class="point-data"></p>
+    </div>
+    <p  class="point-text">Dirección del punto de recogida</p>
+    <div class="point-container">
+        <span class="material-symbols-outlined">location_on</span>
+        <p id="Direccion_Punto" class="point-data"></p>
+    </div> 
+    <p  class="point-text">Tiempo de entrega</p>
+    <div class="point-container">
+        <span class="material-symbols-outlined">timer</span>
+        <p id="Tiempo_Entrega" class="point-data">2-4 días laborables</p>
+    </div>';
           /*Texto de los titulos mas grandes y negrita, separarlos por una linea finita añadir un div con dentro la info y
            un icono represativo, colores de la info asi medio gris */
-
 }
 add_filter( 'woocommerce_checkout_after_customer_details', 'mi_filtro_personalizado' );
