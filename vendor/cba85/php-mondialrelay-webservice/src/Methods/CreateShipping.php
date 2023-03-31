@@ -94,7 +94,7 @@ class CreateShipping extends Method implements MethodInterface
             'Exp_Valeur' => "/^[0-9]{0,7}$/",
             'Exp_Devise' => "/^(|EUR)$/",
             'COL_Rel_Pays' => "/^[A-Z]{2}$/",
-            'COL_Rel' => "/^(|[0-9]{6})$/",
+            'COL_Rel' => null,
             'LIV_Rel_Pays' =>  "/^[A-Z]{2}/",
             'LIV_Rel' => "/^(|[0-9]{6})$/",
             'TAvisage' => "/^(|O|N)$/",
