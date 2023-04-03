@@ -56,13 +56,21 @@ function PointRelayMap()
             });
           });
         });
+      }else {
+        $("#Zone_Widget").MR_ParcelShopPicker({
+          Target: "",
+          Brand: "BDTEST  ",
+          Country: "ES",
+          PostCode: "28001",
+          ColLivMod: "24R",
+          NbResults: "7",
+          Responsive: true,
+          ShowResultsOnMap: true,
+          OnParcelShopSelected: OnParcelShopSelected
+      });
       }
     });
     </script>';
-    //practicas.website
-    //$client = new Client("https://practicas.website","ck_b6d11d688c0bd6719dd94a55faa4116522c9dc24","cs_d84c87daf39e042616802bc396f67a1c007e89b0");
-    // $client = new Client(WOO_SITE, WOO_KEY, WOO_PASS);;
-    //echo $client->getLastOrderByUser();
     return $html;
 }
 

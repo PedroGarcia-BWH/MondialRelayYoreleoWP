@@ -15,6 +15,14 @@ function createShippingAction($order_id) {
     $shipping_last_name = strtr($order->get_shipping_last_name(), $tildes, $sin_tildes);
     $shipping_address_1 = strtr($order->get_shipping_address_1(), $tildes, $sin_tildes);
     $shipping_city = strtr($order->get_shipping_city(), $tildes, $sin_tildes);
+    $items = $order->get_items(); // Obtiene todos los artículos del pedido
+    $book = reset($items);
+    $product = wc_get_product($book->get_product_id());
+    if ( $product ) {
+        $weight = $product->get_meta('_weight');
+    } else {
+        $weight = '900';
+    }
     $parameters = [
         'ModeCol' => 'REL',
         'ModeLiv' => '24R',
@@ -32,7 +40,7 @@ function createShippingAction($order_id) {
         'Dest_CP' => $order->get_shipping_postcode(),
         'Dest_Pays' => 'ES',
         'Dest_Tel1' => '+34'.$order->get_billing_phone(),
-        'Poids' => '200', //placeholder
+        'Poids' => $weight, //placeholder
         'NbColis' => '1',
         'COL_Rel_Pays' => 'ES',
         'COL_Rel' => 'AUTO', //El vendendor puede llevarlo donde quiera
@@ -54,14 +62,14 @@ function createShippingAction($order_id) {
         $order->update_meta_data('Numero_Envio', $createShipping->ExpeditionNum);
         $order->update_meta_data('Etiqueta', $createShipping->URL_Etiquette);
         $order->save();
-
-        sendEmail($createShipping->URL_Etiquette, 'pedro.garciaromera@alum.uca.es');
-
-        //Envio de información al vendedor
-        $vendor_id = $order->get_meta('_vendor_id');
+         //Envio de información al vendedor
+        $vendor_id = $order->get_meta('_dokan_vendor_id');
         $vendor = get_user_by('ID', $vendor_id);
         $vendor_email = $vendor->user_email;
-        sendEmail($createShipping->URL_Etiquette, $vendor_email);
+
+        sendEmail(EMAIL_ADMIN, $order, $vendor);
+
+        sendEmail($vendor_email, $order, $vendor);
     }
 }
 
