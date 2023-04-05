@@ -2,6 +2,7 @@
     require_once dirname(__DIR__) . '/mondialRelayAPI/createShipping.php';
     require_once dirname(__DIR__) . '/mondialRelayAPI/createLabel.php';
     require_once dirname(__DIR__) . '/sendiblue/sendEmail.php';
+    require_once dirname(__DIR__) . '/sendiblue/sendErrorEmail.php';
     
 
 add_action('woocommerce_order_status_processing', 'createShippingAction');
@@ -55,16 +56,70 @@ function createShippingAction($order_id) {
 
     $createShipping = createLabel($parameters);
 
+    $vendor_id = $order->get_meta('_dokan_vendor_id'); //----------------------------CUIDADO ESTO------------------------------
+    $vendor = get_user_by('ID', $vendor_id);
+
     if ($createShipping->STAT != '0') {
         $order->update_status('failed', 'Error al crear el envío');
+        switch($createShipping->STAT) {
+            case '1' || '2' || '3' || '5':
+                $error = 'Identificiación con Mondial Inválida';
+                break;
+            case '11':
+                $error = 'Número de retransmisión de recogida no válido';
+                break;
+            case '12':
+                $error = 'País de retransmisión de colección no válido';
+                break;
+            case '13':
+                $error = 'Tipo de envío no válido';
+                break;
+            case '14':
+                $error = 'Número de relé de entrega no válido';
+                break;
+            case '15': 
+                $error = 'País de retransmisión de entrega no válido';
+                break;
+            case '20':
+                $error = 'Peso no válido';
+                break;
+            case '21':
+                $error = 'Número de paquetes no válido';
+                break;
+            case '30':
+                $error = 'Nombre de remitente no válido';
+                break;
+            case '31':
+                $error = 'Dirección de remitente no válida';
+                break;
+            case '33':
+                $error = 'Nombre de destinatario no válido';
+                break;
+            case '34':
+                $error = 'Dirección de destinatario no válida';
+                break;
+            case '36':
+                $error = 'Código postal de destinatario no válido';
+                break;
+            case '38':
+                $error = 'Número de telefono de destinatario no válido';
+                break;
+            case '99':
+                $error = 'Error propio de Mondial Relay(Problemas técnicos)';
+                break;
+            default:
+                $error = 'Error desconocido';
+                break;
+
+        }
+        sendErrorEmail(EMAIL_ADMIN, $order, $vendor, $createShipping->STAT, $error);
         return;
     } else {
         $order->update_meta_data('Numero_Envio', $createShipping->ExpeditionNum);
         $order->update_meta_data('Etiqueta', $createShipping->URL_Etiquette);
         $order->save();
          //Envio de información al vendedor
-        $vendor_id = $order->get_meta('_dokan_vendor_id');
-        $vendor = get_user_by('ID', $vendor_id);
+        
         $vendor_email = $vendor->user_email;
 
         sendEmail(EMAIL_ADMIN, $order, $vendor);

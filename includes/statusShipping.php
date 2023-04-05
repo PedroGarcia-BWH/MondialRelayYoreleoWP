@@ -36,7 +36,14 @@ function StatusShipping() {
         </div>
     </div>
 
+    <div id="feedback" class="entregado">
+        <h2>¿Entrega correcta?</h2>
+        <button id="correct">SI</button>
+        <button id="no-correct">NO</button>
+    </div>
+
     <div class="line"></div>
+    
     <script>
 	
     jQuery.ajax({
@@ -53,7 +60,8 @@ function StatusShipping() {
             //const codigo = 84;
 
             switch (parseInt(response.codStatus)) {
-                case 82:
+                case 82 || 87:
+                    document.getElementById("feedback").style.display = "block";
                     document.getElementById("Entregado").checked = true;
                     break;
                 case 84:
@@ -61,9 +69,6 @@ function StatusShipping() {
                     break
                 case 85:
                     document.getElementById("Disponible").checked = true;
-                    break;
-                case 87:
-                    document.getElementById("Entregado").checked = true;
                     break;
                 case 88:
                     document.getElementById("Transito").checked = true;
@@ -78,6 +83,42 @@ function StatusShipping() {
             console.log("Ha habido un error en la comunicación con el servidor");
         }
     });
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementById("correct").addEventListener("click", function() {
+            document.getElementById("feedback").style.display = "none";
+            jQuery.ajax({
+                url: "",
+                type: "POST",
+                data: {
+                    accion: "correct"
+                },
+                success: function(response) {
+                    console.log("correct");
+                },
+                error: function() {
+                    console.log("Ha habido un error en la comunicación con el servidor");
+                }
+            });
+        });
+        document.getElementById("no-correct").addEventListener("click", function() {
+            document.getElementById("feedback").style.display = "none";
+            jQuery.ajax({
+                url: "",
+                type: "POST",
+                data: {
+                    accion: "noCorrect"
+                },
+                success: function(response) {
+                    console.log("No correct");
+                },
+                error: function() {
+                    console.log("Ha habido un error en la comunicación con el servidor");
+                }
+            });
+        
+        });
+      });
         </script>';
         return $html;
 }
@@ -115,5 +156,23 @@ if (isset($_POST['accion']) == 'statShipping') {
     echo json_encode(array('codStatus' => $codStatus)); 
     exit;
     }	
+
     
+    function correct() {
+        $order_id = 123;
+        $order = wc_get_order( $order_id ); // Obtiene la orden
+
+        $order->update_status( 'completed-success' ); 
+
+        wc_update_order( $order ); // Actualiza la orden
+    }
+
+    function noCorrect() {
+        $order_id = 123;
+        $order = wc_get_order( $order_id ); // Obtiene la orden
+
+        $order->update_status( 'completed-fail' ); 
+
+        wc_update_order( $order ); // Actualiza la orden
+    }
 ?>
