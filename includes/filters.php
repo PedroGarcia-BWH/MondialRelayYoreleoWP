@@ -1,6 +1,9 @@
 <?php 
 
-
+function my_custom_content_after_order_table() {
+    echo '<p>Aquí puedes agregar tu contenido personalizado después de la tabla de detalles del pedido.</p>';
+}
+add_action( 'um_account_order_details_after_table', 'my_custom_content_after_order_table' );
 /*add_filter( 'woocommerce_checkout_fields', 'agregar_nuevo_campo' );
 
 function agregar_nuevo_campo( $fields ) {
@@ -104,3 +107,5 @@ function mi_filtro_personalizado() {
            un icono represativo, colores de la info asi medio gris */
 }
 add_filter( 'woocommerce_checkout_after_customer_details', 'mi_filtro_personalizado' );
+
+?>
