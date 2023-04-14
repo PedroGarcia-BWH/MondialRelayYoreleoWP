@@ -54,10 +54,24 @@ function createShippingAction($order_id) {
     $order->update_meta_data('Etiqueta', 'Valor');
     $order->save();
 
-    $createShipping = createLabel($parameters);
-
     $vendor_id = $order->get_meta('_dokan_vendor_id'); //----------------------------CUIDADO ESTO------------------------------
     $vendor = get_user_by('ID', $vendor_id);
+
+    try {
+        $createShipping = createLabel($parameters);
+    }catch(Exception $e) {
+        $order->update_status('failed', 'Error al crear el envío');
+        sendErrorEmail(EMAIL_ADMIN, $order, $vendor, 'Error desconocido', 'Error desconocido');
+        $order->update_meta_data('nombre_error', $shipping_first_name . ' ' . $shipping_last_name);
+        $order->update_meta_data('direccion_envio_error', $shipping_address_1);
+        $order->update_meta_data('ciudad_envio_error', $shipping_city);
+        $order->update_meta_data('codigo_postal_envio_error', $order->get_shipping_postcode());
+        $order->update_meta_data('telefono_envio_error', $order->get_billing_phone());
+        $order->update_meta_data('numero_envio_error', $createShipping->NUM);
+        $order->update_meta_data('punto_pack_error', $order->get_meta('Punto_Pack_Hidden'));
+        return;
+    }
+    
 
     if ($createShipping->STAT != '0') {
         $order->update_status('failed', 'Error al crear el envío');

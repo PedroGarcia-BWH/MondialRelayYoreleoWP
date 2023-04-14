@@ -12,7 +12,7 @@
  * Plugin Name:       Mondial Relay by Yoreleo
  * Plugin URI:        https://github.com/PedroGarcia-BWH/MondialRelayYoreleoWP
  * Description:       Conexión con la API de Mondial Relay para la gestión de envíos y datos de los clientes de Yoreleo
- * Version:           alpha-0.0.5
+ * Version:           alpha-1.0.0
  * Requires at least: 5.2
  * Requires PHP:      8.1
  * Author:            Pedro José García Romera
@@ -49,6 +49,43 @@ function my_plugin_activation() {
     $file_content = file_get_contents(plugin_dir_path(__FILE__)."public/templates/order-popup.php");
 
     file_put_contents($file_path, $file_content);
+
+    //creación de estado de pedido personalizado delivered, dlivered-success y delivered-problem
+    if ( ! get_post_status_object( 'wc-delivered' ) ) {
+        // Registrar un nuevo estado de pedido personalizado
+        register_post_status( 'wc-delivered', array(
+            'label'                     => __( 'Delivered', 'woocommerce' ),
+            'public'                    => true,
+            'exclude_from_search'       => false,
+            'show_in_admin_all_list'    => true,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop( 'Delivered <span class="count">(%s)</span>', 'Delivered <span class="count">(%s)</span>', 'woocommerce' )
+        ) );
+    }
+
+    if ( ! get_post_status_object( 'wc-delivered-success' ) ) {
+        // Registrar un nuevo estado de pedido personalizado
+        register_post_status( 'wc-delivered-success', array(
+            'label'                     => __( 'Delivered Success', 'woocommerce' ),
+            'public'                    => true,
+            'exclude_from_search'       => false,
+            'show_in_admin_all_list'    => true,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop( 'Delivered Success <span class="count">(%s)</span>', 'Delivered Success <span class="count">(%s)</span>', 'woocommerce' )
+        ) );
+    }
+
+    if ( ! get_post_status_object( 'wc-delivered-problem' ) ) {
+        // Registrar un nuevo estado de pedido personalizado
+        register_post_status( 'wc-delivered-problem', array(
+            'label'                     => __( 'Delivered Problem', 'woocommerce' ),
+            'public'                    => true,
+            'exclude_from_search'       => false,
+            'show_in_admin_all_list'    => true,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop( 'Delivered Problem <span class="count">(%s)</span>', 'Delivered Problem <span class="count">(%s)</span>', 'woocommerce' )
+        ) );
+    }
 
 }
 
