@@ -1,8 +1,6 @@
 <?php
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/mondialRelayAPI/wooComercceClient/Client.php';
-require_once dirname(__DIR__) . '/private/config.php';
 
 add_shortcode('StatusShipping', 'StatusShipping');
 
@@ -44,12 +42,6 @@ function StatusShipping($atts) {
                     <input id="Entregado"type="checkbox" disabled style="border-radius: 50%;">
                 </div>
             </div>
-        
-            <div id="feedback" class="entregado">
-                <h2>¿Entrega correcta?</h2>
-                <button id="correct">SI</button>
-                <button id="no-correct">NO</button>
-            </div>
             </div>    
             <script>
             
@@ -67,11 +59,10 @@ function StatusShipping($atts) {
                     //const codigo = 84;
         
                     switch (parseInt(response.codStatus)) {
-                        case 82 || 87:
-                            document.getElementById("feedback").style.display = "block";
+                        case 82 || 87: 
                             document.getElementById("Entregado").checked = true;
                             break;
-                        case 84:
+                        case 81:
                             document.getElementById("PuntoPack").checked = true;
                             break
                         case 85:
@@ -90,42 +81,6 @@ function StatusShipping($atts) {
                     console.log("Ha habido un error en la comunicación con el servidor");
                 }
             });
-        
-            document.addEventListener("DOMContentLoaded", function(event) {
-                document.getElementById("correct").addEventListener("click", function() {
-                    document.getElementById("feedback").style.display = "none";
-                    jQuery.ajax({
-                        url: "",
-                        type: "POST",
-                        data: {
-                            accion: "correct"
-                        },
-                        success: function(response) {
-                            console.log("correct");
-                        },
-                        error: function() {
-                            console.log("Ha habido un error en la comunicación con el servidor");
-                        }
-                    });
-                });
-                document.getElementById("no-correct").addEventListener("click", function() {
-                    document.getElementById("feedback").style.display = "none";
-                    jQuery.ajax({
-                        url: "",
-                        type: "POST",
-                        data: {
-                            accion: "noCorrect"
-                        },
-                        success: function(response) {
-                            console.log("No correct");
-                        },
-                        error: function() {
-                            console.log("Ha habido un error en la comunicación con el servidor");
-                        }
-                    });
-                
-                });
-              });
             </script>';
         } 
     }
@@ -137,7 +92,7 @@ function statShipping($numPedido) {
 
     // Creamos una instancia del servicio web de Mondial Relay y le pasamos nuestras credenciales
     //$mondialrelay = new \MondialRelay\Webservice('BDTEST13', 'PrivateK');
-    $mondialrelay = new \MondialRelay\Webservice(MONDIAL_ACCESS, MONDIAL_PASS);
+    $mondialrelay = new \MondialRelay\Webservice(get_option( 'MONDIAL_ACCESS'), get_option( 'MONDIAL_PASS'));
     
 
     // Creamos un array con los parámetros de búsqueda
@@ -151,36 +106,19 @@ function statShipping($numPedido) {
     //echo $trackParcel->STAT;
     return $trackParcel->STAT;
 }
+    
 
-// Comprobamos si se ha enviado el formulario
+    // Comprobamos si se ha enviado el formulario
 if (isset($_POST['accion']) == 'statShipping') {
     // Obtenemos los valores de los números enviados por AJAX
     $numPedido = $_POST['numPedido'];
         
-    // Llamamos a la función sumar y devolvemos el resultado
     $codStatus = statShipping($numPedido);
-    //echo $resultado;
+
     header('Content-Type: application/json');
     echo json_encode(array('codStatus' => $codStatus)); 
     exit;
-    }	
+}
 
-    
-    function correct() {
-        $order_id = 123;
-        $order = wc_get_order( $order_id ); // Obtiene la orden
 
-        $order->update_status( 'completed-success' ); 
-
-        wc_update_order( $order ); // Actualiza la orden
-    }
-
-    function noCorrect() {
-        $order_id = 123;
-        $order = wc_get_order( $order_id ); // Obtiene la orden
-
-        $order->update_status( 'completed-fail' ); 
-
-        wc_update_order( $order ); // Actualiza la orden
-    }
 ?>

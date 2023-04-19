@@ -33,21 +33,21 @@ function createShippingAction($order_id) {
         'Expe_Ville' => 'Cadiz',
         'Expe_CP' => '11011',
         'Expe_Pays' => 'ES',
-        'Expe_Tel1' => '+34611223344', //estos datos mñn preguntar
+        'Expe_Tel1' => '+34611223344', 
         'Dest_Langage' => 'ES',
-        'Dest_Ad1' => $shipping_first_name . ' ' . $shipping_last_name,
-        'Dest_Ad3' => $shipping_address_1,
-        'Dest_Ville' => $shipping_city,
-        'Dest_CP' => $order->get_shipping_postcode(),
+        'Dest_Ad1' => $shipping_first_name . ' ' . $shipping_last_name, //Nombre y apellidos
+        'Dest_Ad3' => $shipping_address_1, //Domicilio del comprador
+        'Dest_Ville' => $shipping_city, //Ciudad del comprador
+        'Dest_CP' => $order->get_shipping_postcode(), //Código postal del comprador
         'Dest_Pays' => 'ES',
-        'Dest_Tel1' => '+34'.$order->get_billing_phone(),
-        'Poids' => $weight, //placeholder
+        'Dest_Tel1' => '+34'.$order->get_billing_phone(), //Teléfono del comprador
+        'Poids' => $weight, //Peso del libro 
         'NbColis' => '1',
         'COL_Rel_Pays' => 'ES',
         'COL_Rel' => 'AUTO', //El vendendor puede llevarlo donde quiera
         'CRT_Valeur' => '0',
         'LIV_Rel_Pays' => 'ES',
-        'LIV_Rel' => $order->get_meta('Punto_Pack_Hidden') //Recogida del comprador
+        'LIV_Rel' => $order->get_meta('Punto_Pack_Hidden') //Punto de recogida elegido por el comprador
 
     ];
     $order->update_meta_data('Numero_Envio', 'Valor');
@@ -61,7 +61,7 @@ function createShippingAction($order_id) {
         $createShipping = createLabel($parameters);
     }catch(Exception $e) {
         $order->update_status('failed', 'Error al crear el envío');
-        sendErrorEmail(EMAIL_ADMIN, $order, $vendor, 'Error desconocido', 'Error desconocido');
+        sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocido', 'Error desconocido');
         $order->update_meta_data('nombre_error', $shipping_first_name . ' ' . $shipping_last_name);
         $order->update_meta_data('direccion_envio_error', $shipping_address_1);
         $order->update_meta_data('ciudad_envio_error', $shipping_city);
@@ -69,11 +69,13 @@ function createShippingAction($order_id) {
         $order->update_meta_data('telefono_envio_error', $order->get_billing_phone());
         $order->update_meta_data('numero_envio_error', $createShipping->NUM);
         $order->update_meta_data('punto_pack_error', $order->get_meta('Punto_Pack_Hidden'));
+        $order->save();
         return;
     }
     
 
     if ($createShipping->STAT != '0') {
+        sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocid3o', 'Error desconocid3o');
         $order->update_status('failed', 'Error al crear el envío');
         switch($createShipping->STAT) {
             case '1' || '2' || '3' || '5':
@@ -126,7 +128,7 @@ function createShippingAction($order_id) {
                 break;
 
         }
-        sendErrorEmail(EMAIL_ADMIN, $order, $vendor, $createShipping->STAT, $error);
+        sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, $createShipping->STAT, $error);
         return;
     } else {
         $order->update_meta_data('Numero_Envio', $createShipping->ExpeditionNum);
@@ -136,7 +138,7 @@ function createShippingAction($order_id) {
         
         $vendor_email = $vendor->user_email;
 
-        sendEmail(EMAIL_ADMIN, $order, $vendor);
+        sendEmail(get_option('EMAIL_ADMIN'), $order, $vendor);
 
         sendEmail($vendor_email, $order, $vendor);
     }

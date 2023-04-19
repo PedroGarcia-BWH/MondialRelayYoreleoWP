@@ -29,77 +29,18 @@ if (!defined('WPINC')){
 register_activation_hook( __FILE__, 'my_plugin_activation' );
 
 function my_plugin_activation() {
-    $theme_dir = get_stylesheet_directory();
-    $new_folder = 'um-woocommerce';
-
-    $folder_path = $theme_dir . '/ultimate-member/' . $new_folder;
-    $file_path = $folder_path . '/order-popup.php';
-
     if (!extension_loaded('imap')) {
         echo 'La extensión IMAP no está habilitada';
         exit();
     }
 
-    if (file_exists($folder_path)) {
-        if(file_exists($file_path)) unlink($file_path);
-    } else {
-        wp_mkdir_p($folder_path);
-    }
-
-    $file_content = file_get_contents(plugin_dir_path(__FILE__)."public/templates/order-popup.php");
-
-    file_put_contents($file_path, $file_content);
-
-    //creación de estado de pedido personalizado delivered, dlivered-success y delivered-problem
-    if ( ! get_post_status_object( 'wc-delivered' ) ) {
-        // Registrar un nuevo estado de pedido personalizado
-        register_post_status( 'wc-delivered', array(
-            'label'                     => __( 'Delivered', 'woocommerce' ),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop( 'Delivered <span class="count">(%s)</span>', 'Delivered <span class="count">(%s)</span>', 'woocommerce' )
-        ) );
-    }
-
-    if ( ! get_post_status_object( 'wc-delivered-success' ) ) {
-        // Registrar un nuevo estado de pedido personalizado
-        register_post_status( 'wc-delivered-success', array(
-            'label'                     => __( 'Delivered Success', 'woocommerce' ),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop( 'Delivered Success <span class="count">(%s)</span>', 'Delivered Success <span class="count">(%s)</span>', 'woocommerce' )
-        ) );
-    }
-
-    if ( ! get_post_status_object( 'wc-delivered-problem' ) ) {
-        // Registrar un nuevo estado de pedido personalizado
-        register_post_status( 'wc-delivered-problem', array(
-            'label'                     => __( 'Delivered Problem', 'woocommerce' ),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop( 'Delivered Problem <span class="count">(%s)</span>', 'Delivered Problem <span class="count">(%s)</span>', 'woocommerce' )
-        ) );
-    }
-
-}
-
-
-add_action( 'upgrader_process_complete', 'my_plugin_upgrade_action', 10, 2 );
-
-function my_plugin_upgrade_action( $upgrader_object, $options ) {
-    if ( $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
-        foreach ( $options['plugins'] as $plugin ) {
-            if ( $plugin == 'MondialRelayYoreleoWP/mondialRelayWP.php' ) { // Reemplaza "my-plugin/my-plugin.php" por la ruta del plugin que quieras comprobar
-                my_plugin_activation();
-            }
-        }
-    }
+    add_option('MONDIAL_ACCESS', 'BDTEST13');
+    add_option('MONDIAL_PASS', 'PrivateK');
+    add_option('BLUE_KEY', 'api_key');
+    add_option('EMAIL_ADMIN', 'example@mondial.com');
+    add_option('IMAP_SERVER', '{imap.mondial.com:993/imap/ssl}INBOX');
+    add_option('IMAP_EMAIL', 'example@yoreleo.es');
+    add_option('IMAP_PASS', 'password!');
 }
 
 
@@ -120,7 +61,7 @@ function my_account_page_default_tabs( $tabs ) {
     //$tabs['none'] = __( 'None', 'ultimate-member' );
     //unset( $tabs['orders'] ); // Remueve la opción de órdenes
     $tabs['default_tab'] = ''; // Cambia el nombre de la pestaña de órdenes
-    print_r($tabs);
+    //print_r($tabs);
     return $tabs;
 }
 add_filter( 'um_account_page_default_tabs_hook', 'my_account_page_default_tabs', 999, 1 );

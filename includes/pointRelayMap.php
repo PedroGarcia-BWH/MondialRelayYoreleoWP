@@ -1,9 +1,6 @@
 <?php
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/mondialRelayAPI/wooComercceClient/Client.php';
-require_once dirname(__DIR__) . '/private/config.php';
-
 add_shortcode('PointRelayMap', 'PointRelayMap');
 
 function PointRelayMap()
@@ -52,6 +49,7 @@ function PointRelayMap()
                 NbResults: "7",
                 Responsive: true,
                 ShowResultsOnMap: true,
+                Theme: "inpost",
                 OnParcelShopSelected: OnParcelShopSelected
             });
           });
@@ -66,6 +64,7 @@ function PointRelayMap()
           NbResults: "7",
           Responsive: true,
           ShowResultsOnMap: true,
+          Theme: "inpost",
           OnParcelShopSelected: OnParcelShopSelected
       });
       }

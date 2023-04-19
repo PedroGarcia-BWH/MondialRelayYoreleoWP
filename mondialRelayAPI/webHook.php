@@ -1,5 +1,4 @@
 <?php
-    require_once dirname(__DIR__) . '/private/config.php';
 
     
 function check_email() {

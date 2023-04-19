@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/private/config.php';
 
 use SendinBlue\Client\Api\TransactionalEmailsApi;
 use SendinBlue\Client\Configuration;
@@ -25,7 +24,7 @@ function sendEmail($sender_email, $order, $vendor){
     //$weight = $book->get_meta('_weight');
     //$weight = '200';
 
-    $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', BLUE_KEY);
+    $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', get_option('BLUE_KEY'));
 
     $apiInstance = new TransactionalEmailsApi(new \GuzzleHttp\Client(), $config);
 
