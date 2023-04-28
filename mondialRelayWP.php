@@ -49,6 +49,8 @@ foreach (glob(plugin_dir_path(__FILE__) . "includes/*.php") as $filename) {
     include_once $filename;
 }
 
+include_once plugin_dir_path(__FILE__) . "mondialRelayAPI/updateStatus.php";
+
 
 function my_custom_styles() {
     wp_enqueue_style( 'mondialStyles', plugin_dir_url( __FILE__ ) . 'public/css/public.css' );
@@ -78,3 +80,4 @@ add_filter( 'cron_schedules', function( $schedules ) {
     return $schedules;
 } );
 */
+

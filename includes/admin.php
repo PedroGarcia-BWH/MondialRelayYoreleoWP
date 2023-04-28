@@ -38,7 +38,8 @@ function my_plugin_page() {
       $order = wc_get_order($order_id); // Obtiene la orden
       
       if($order) {
-        createShippingAction($order_id);
+        $order->update_status( 'processing', __( 'Pedido en estado de procesando', 'woocommerce' ) );
+        $order->save();
         echo "<p>Proceso completado para el pedido $order_id, compruebe el email del administrador para comprobar si se ha realizado correctamente </p>";
       }else {
         echo '<p>No existe el pedido <p>';

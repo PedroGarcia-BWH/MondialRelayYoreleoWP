@@ -9,16 +9,26 @@ function StatusShipping($atts) {
         'order_id' => ''
     ), $atts );
 
+    
+
     $html = '';
 
     if ( $atts['order_id'] ) {
         $order = wc_get_order( $atts['order_id'] );
         if ( $order ) {
+            //$now = new DateTime();
+            //$interval = $now->diff(get_post_meta( $atts['order_id'], '_order_date_created', true ) );
+            //$days_difference = $interval->days;
+            $days_difference = 0;
             $html = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <div>
             <h2>Estado del pedido</h2>
             <div class="paquete">
+                <div class="estado">
+                    <span class="material-symbols-outlined">shopping_cart_checkout</span>
+                    <p>Su pedido ha sido creado</p>
+                    <input id="Created" type="checkbox" disabled style="border-radius: 50%;">
+                </div>
                 <div class="estado">
                     <span class="material-symbols-outlined">home_pin</span>
                     <p>Su paquete ha sido entregado a un Punto Pack </p>
@@ -42,45 +52,37 @@ function StatusShipping($atts) {
                     <input id="Entregado"type="checkbox" disabled style="border-radius: 50%;">
                 </div>
             </div>
-            </div>    
+            </div>
+            <p>Haga clic en el siguiente enlace para obtener más información en Inpost: https://www.inpost.es/seguimiento-del-envio/</p>  
             <script>
             
-            jQuery.ajax({
-                url: "",
-                type: "POST",
-                data: {
-                    accion: "statShipping",
-                    //numPedido: numPedido
-                    numPedido: '.$order->get_meta('Numero_Envio').'
-                },
-                success: function(response) {
-                    console.log(response.codStatus);
-                    // código de seguimiento del paquete
-                    //const codigo = 84;
+            cod = '.statShipping($order->get_meta('Numero_Envio')).';
         
-                    switch (parseInt(response.codStatus)) {
-                        case 82 || 87: 
-                            document.getElementById("Entregado").checked = true;
-                            break;
-                        case 81:
-                            document.getElementById("PuntoPack").checked = true;
+                    switch (cod) {
+                        case 80:
+                            document.getElementById("Created").checked = true;
                             break
-                        case 85:
-                            document.getElementById("Disponible").checked = true;
-                            break;
+                        case 81:
+                            if("'.$order->get_status().'" == "processing") {
+                                document.getElementById("PuntoPack").checked = true;
+                            } else if("'.$order->get_status().'" == "completed" ) {
+                                document.getElementById("Disponible").checked = true;
+                            }
+                            break
+                        case 82 : 
+                            document.getElementById("Entregado").checked = true;
+                            break
+                        
                         case 88:
                             document.getElementById("Transito").checked = true;
                             break
         
                         default:
                             console.log("No se ha encontrado el código de seguimiento");
-                            break;
+                            break
                     }
-                },
-                error: function() {
-                    console.log("Ha habido un error en la comunicación con el servidor");
-                }
-            });
+                
+                console.log("Purbecta: '.wp_next_scheduled( 'update_status_delivered' ).'");
             </script>';
         } 
     }
@@ -92,8 +94,7 @@ function statShipping($numPedido) {
 
     // Creamos una instancia del servicio web de Mondial Relay y le pasamos nuestras credenciales
     //$mondialrelay = new \MondialRelay\Webservice('BDTEST13', 'PrivateK');
-    $mondialrelay = new \MondialRelay\Webservice(get_option( 'MONDIAL_ACCESS'), get_option( 'MONDIAL_PASS'));
-    
+    $mondialrelay = new \MondialRelay\Webservice(get_option('MONDIAL_ACCESS'), get_option('MONDIAL_PASS'));
 
     // Creamos un array con los parámetros de búsqueda
     $parameters = [
@@ -107,18 +108,6 @@ function statShipping($numPedido) {
     return $trackParcel->STAT;
 }
     
-
-    // Comprobamos si se ha enviado el formulario
-if (isset($_POST['accion']) == 'statShipping') {
-    // Obtenemos los valores de los números enviados por AJAX
-    $numPedido = $_POST['numPedido'];
-        
-    $codStatus = statShipping($numPedido);
-
-    header('Content-Type: application/json');
-    echo json_encode(array('codStatus' => $codStatus)); 
-    exit;
-}
 
 
 ?>

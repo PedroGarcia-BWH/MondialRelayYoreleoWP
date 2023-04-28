@@ -19,10 +19,9 @@ function createShippingAction($order_id) {
     $items = $order->get_items(); // Obtiene todos los artículos del pedido
     $book = reset($items);
     $product = wc_get_product($book->get_product_id());
+    $weight = '900';
     if ( $product ) {
-        $weight = $product->get_meta('_weight');
-    } else {
-        $weight = '900';
+        if ( !empty($product->get_meta('_weight')) ) $weight = $product->get_meta('_weight');
     }
     $parameters = [
         'ModeCol' => 'REL',
@@ -61,7 +60,7 @@ function createShippingAction($order_id) {
         $createShipping = createLabel($parameters);
     }catch(Exception $e) {
         $order->update_status('failed', 'Error al crear el envío');
-        sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocido', 'Error desconocido');
+        sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocido', $e->getMessage());
         $order->update_meta_data('nombre_error', $shipping_first_name . ' ' . $shipping_last_name);
         $order->update_meta_data('direccion_envio_error', $shipping_address_1);
         $order->update_meta_data('ciudad_envio_error', $shipping_city);
@@ -69,6 +68,8 @@ function createShippingAction($order_id) {
         $order->update_meta_data('telefono_envio_error', $order->get_billing_phone());
         $order->update_meta_data('numero_envio_error', $createShipping->NUM);
         $order->update_meta_data('punto_pack_error', $order->get_meta('Punto_Pack_Hidden'));
+        $order->update_meta_data('peso_error', $weight);
+        $order->update_meta_data('mensaje_error', $e->getMessage());
         $order->save();
         return;
     }
@@ -135,7 +136,6 @@ function createShippingAction($order_id) {
         $order->update_meta_data('Etiqueta', $createShipping->URL_Etiquette);
         $order->save();
          //Envio de información al vendedor
-        
         $vendor_email = $vendor->user_email;
 
         sendEmail(get_option('EMAIL_ADMIN'), $order, $vendor);
