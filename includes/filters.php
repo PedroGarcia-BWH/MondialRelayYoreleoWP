@@ -44,7 +44,7 @@ function agregar_nuevo_campo( $fields ) {
 add_filter( 'woocommerce_checkout_fields', 'InfoPointRelais' );
 
 function InfoPointRelais( $fields ) {
-    $fields['billing']['Nombre_Punto_Hidden'] = array(
+    $fields['billing']['nombre_punto_hidden'] = array(
         'label'       => __( 'Lugar de recogida', 'woocommerce' ),
         'required'    => true,
         'class'       => array('ocultar-campo'),
@@ -55,7 +55,7 @@ function InfoPointRelais( $fields ) {
         ),
     );
 
-    $fields['billing']['Direccion_Punto_Hidden'] = array(
+    $fields['billing']['direccion_punto_hidden'] = array(
         'label'       => __( 'Dirección de recogida', 'woocommerce' ),
         'required'    => true,
         'class'       => array( 'ocultar-campo' ),
@@ -66,7 +66,7 @@ function InfoPointRelais( $fields ) {
         )
     );
 
-    $fields['billing']['Punto_Pack_Hidden'] = array(
+    $fields['billing']['punto_pack_hidden'] = array(
         'label'       => __( 'Punto Pack', 'woocommerce' ),
         'required'    => true,
         'class'       => array( 'ocultar-campo' ),

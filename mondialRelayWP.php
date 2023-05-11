@@ -12,7 +12,7 @@
  * Plugin Name:       Mondial Relay by Yoreleo
  * Plugin URI:        https://github.com/PedroGarcia-BWH/MondialRelayYoreleoWP
  * Description:       Conexión con la API de Mondial Relay para la gestión de envíos y datos de los clientes de Yoreleo
- * Version:           alpha-1.0.0
+ * Version:           alpha-1.0.1
  * Requires at least: 5.2
  * Requires PHP:      8.1
  * Author:            Pedro José García Romera
@@ -59,25 +59,13 @@ function my_custom_styles() {
 add_action( 'wp_enqueue_scripts', 'my_custom_styles' );
 
 
-function my_account_page_default_tabs( $tabs ) {
+/*function my_account_page_default_tabs( $tabs ) {
     //$tabs['none'] = __( 'None', 'ultimate-member' );
     //unset( $tabs['orders'] ); // Remueve la opción de órdenes
     $tabs['default_tab'] = ''; // Cambia el nombre de la pestaña de órdenes
     //print_r($tabs);
     return $tabs;
 }
-add_filter( 'um_account_page_default_tabs_hook', 'my_account_page_default_tabs', 999, 1 );
+add_filter( 'um_account_page_default_tabs_hook', 'my_account_page_default_tabs', 999, 1 );*/
 
-
-/*wp_schedule_event( time(), '5_minutes', 'check_email' );
-
-// Agregar un nuevo intervalo de tiempo de 5 minutos
-add_filter( 'cron_schedules', function( $schedules ) {
-    $schedules['5_minutes'] = array(
-        'interval' => 300,
-        'display'  => esc_html__( 'Every 5 Minutes', 'textdomain' ),
-    );
-    return $schedules;
-} );
-*/
 

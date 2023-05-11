@@ -10,19 +10,28 @@ add_action('woocommerce_order_status_processing', 'createShippingAction');
 //creamos el envio en mondial relay y guardamos el numero de envio en la orden
 function createShippingAction($order_id) {
     $order = wc_get_order($order_id);
-    $tildes = "áéíóúüñ";
-    $sin_tildes = "aeiouun";
-    $shipping_first_name = strtr($order->get_shipping_first_name(), $tildes, $sin_tildes);
-    $shipping_last_name = strtr($order->get_shipping_last_name(), $tildes, $sin_tildes);
-    $shipping_address_1 = strtr($order->get_shipping_address_1(), $tildes, $sin_tildes);
-    $shipping_city = strtr($order->get_shipping_city(), $tildes, $sin_tildes);
+    
+    $shipping_first_name = eliminar_tildes($order->get_shipping_first_name());
+    $shipping_last_name =  eliminar_tildes($order->get_shipping_last_name());
+    $shipping_address_1 = eliminar_tildes($order->get_shipping_address_1());
+    //$shipping_address_1 = preg_replace("/[^0-9A-Z_\-'., \/]/", "", $shipping_address_1);
+    $shipping_address_1 = preg_replace("/[^0-9A-Za-z_\-'., \/]/", "", $shipping_address_1);
+    
+    $shipping_city = eliminar_tildes($order->get_shipping_city());
     $items = $order->get_items(); // Obtiene todos los artículos del pedido
     $book = reset($items);
+    
     $product = wc_get_product($book->get_product_id());
     $weight = '900';
     if ( $product ) {
-        if ( !empty($product->get_meta('_weight')) ) $weight = $product->get_meta('_weight');
-    }
+        if ( !empty($product->get_meta('_weight')) ) {
+          $weight = $product->get_meta('_weight');
+          if (is_float($weight) || !is_numeric($weight)) {
+            // Si el peso es decimal o no es un número, asignar el valor 900
+            $weight = 900;
+          }
+        }
+      }
     $parameters = [
         'ModeCol' => 'REL',
         'ModeLiv' => '24R',
@@ -46,20 +55,29 @@ function createShippingAction($order_id) {
         'COL_Rel' => 'AUTO', //El vendendor puede llevarlo donde quiera
         'CRT_Valeur' => '0',
         'LIV_Rel_Pays' => 'ES',
-        'LIV_Rel' => $order->get_meta('Punto_Pack_Hidden') //Punto de recogida elegido por el comprador
+        'LIV_Rel' => $order->get_meta('punto_pack_hidden') //Punto de recogida elegido por el comprador
 
     ];
     $order->update_meta_data('Numero_Envio', 'Valor');
     $order->update_meta_data('Etiqueta', 'Valor');
     $order->save();
 
-    $vendor_id = $order->get_meta('_dokan_vendor_id'); //----------------------------CUIDADO ESTO------------------------------
-    $vendor = get_user_by('ID', $vendor_id);
+    foreach ( $order->get_items() as $item_id => $item ) {
+
+        $product_id = $item->get_product_id();
+ 
+     }
+
+    /*$vendor_id = $order->get_meta('_dokan_vendor_id'); //----------------------------CUIDADO ESTO------------------------------
+    $vendor = get_user_by('ID', $vendor_id);*/
+    $vendor_id = get_post_meta($product_id, 'vendor', true);
+
+    $vendor = get_user_by('id',$vendor_id);
 
     try {
         $createShipping = createLabel($parameters);
     }catch(Exception $e) {
-        $order->update_status('failed', 'Error al crear el envío');
+        $order->update_status('failed', 'Error al crear el envío(bad Parameters)');
         sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocido', $e->getMessage());
         $order->update_meta_data('nombre_error', $shipping_first_name . ' ' . $shipping_last_name);
         $order->update_meta_data('direccion_envio_error', $shipping_address_1);
@@ -67,7 +85,7 @@ function createShippingAction($order_id) {
         $order->update_meta_data('codigo_postal_envio_error', $order->get_shipping_postcode());
         $order->update_meta_data('telefono_envio_error', $order->get_billing_phone());
         $order->update_meta_data('numero_envio_error', $createShipping->NUM);
-        $order->update_meta_data('punto_pack_error', $order->get_meta('Punto_Pack_Hidden'));
+        $order->update_meta_data('punto_pack_error', $order->get_meta('punto_pack_hidden'));
         $order->update_meta_data('peso_error', $weight);
         $order->update_meta_data('mensaje_error', $e->getMessage());
         $order->save();
@@ -77,7 +95,7 @@ function createShippingAction($order_id) {
 
     if ($createShipping->STAT != '0') {
         sendErrorEmail(get_option('EMAIL_ADMIN'), $order, $vendor, 'Error desconocid3o', 'Error desconocid3o');
-        $order->update_status('failed', 'Error al crear el envío');
+        $order->update_status('failed', 'Error al crear el envío(STAT != 0)');
         switch($createShipping->STAT) {
             case '1' || '2' || '3' || '5':
                 $error = 'Identificiación con Mondial Inválida';
@@ -147,9 +165,48 @@ function createShippingAction($order_id) {
 //guardamos los campos de informacion de mondial relay en el pedido
 add_action('woocommerce_checkout_create_order', 'saveInfoPointRelais');
 function saveInfoPointRelais($order) {
-    $order->update_meta_data('Punto_Pack_Hidden', $_POST['Punto_Pack_Hidden']);
+    $order->update_meta_data('punto_pack_hidden', $_POST['punto_pack_hidden']);
 
-    $order->update_meta_data('Nombre_Punto_Hidden', $_POST['Nombre_Punto_Hidden']);
+    $order->update_meta_data('nombre_punto_hidden', $_POST['nombre_punto_hidden']);
 
-    $order->update_meta_data('Direccion_Punto_Hidden', $_POST['Direccion_Punto_Hidden']);
+    $order->update_meta_data('direccion_punto_hidden', $_POST['direccion_punto_hidden']);
+}
+
+
+function eliminar_tildes($cadena){
+
+    //Ahora reemplazamos las letras
+    $cadena = str_replace(
+        array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+        array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+        $cadena
+    );
+
+    $cadena = str_replace(
+        array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+        array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+        $cadena );
+
+    $cadena = str_replace(
+        array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+        array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+        $cadena );
+
+    $cadena = str_replace(
+        array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+        array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+        $cadena );
+
+    $cadena = str_replace(
+        array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+        array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+        $cadena );
+
+    $cadena = str_replace(
+        array('ñ', 'Ñ', 'ç', 'Ç'),
+        array('n', 'N', 'c', 'C'),
+        $cadena
+    );
+
+    return $cadena;
 }
